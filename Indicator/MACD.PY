@@ -1,13 +1,15 @@
 import pandas as pd
+import pandas_ta as ta
 
-def MACD(df, Confict=False, External_Lib=True):
+def MACD(df, Conflict=True, External_Lib=True):
+
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.droplevel(0)
 
     if External_Lib:
-        import pandas_ta as ta
-        macd = ta.macd(df["Close"])
-        if Confict:
+        macd = ta.macd(df["Close"], fast=12, slow=26, signal=9)
+        macd.columns = ["MACD_Line", "Signal_Line", "MACD_Hist"]
+        if Conflict:
             return macd
         return df.join(macd)
 
@@ -17,7 +19,7 @@ def MACD(df, Confict=False, External_Lib=True):
     df["Signal_Line"] = df["MACD_Line"].ewm(span=9, adjust=False).mean()
     df["MACD_Hist"] = df["MACD_Line"] - df["Signal_Line"]
 
-    if Confict:
+    if Conflict:
         return df[["MACD_Line", "Signal_Line", "MACD_Hist"]]
 
     return df

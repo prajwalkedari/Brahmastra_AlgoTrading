@@ -1,8 +1,8 @@
 #Author: Pratham Dubey
 import pandas as pd
-def VWAP(df,Confict=False,External_Lib=True):
+def VWAP(df,Confict=True,External_Lib=True):
     if isinstance(df.columns, pd.MultiIndex):
-        df.columns = df.columns.droplevel(0)
+        df.columns = df.columns.droplevel(1)
     if External_Lib:
         import pandas_ta as ta 
         t=ta.vwap(df["High"],df["Low"],df["Close"],df["Volume"])
